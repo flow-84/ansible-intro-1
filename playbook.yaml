@@ -1,0 +1,41 @@
+---
+- name: Setup Web Server
+  hosts: all
+  become: true
+  tasks:
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install vim and nano
+      yum:
+        name:
+          - vim
+          - nano
+        state: present
+
+    - name: Create webroot directory
+      file:
+        path: /var/www/html
+        state: directory
+
+    - name: Copy index.html to webroot
+      copy:
+        src: /mnt/c/Users/rajam/Documents/GitHub/Ansible/ansible-intro/index.html
+        dest: /var/www/html/index.html
+
+    - name: Install Nginx
+      yum:
+        name: nginx
+        state: present
+
+    - name: Copy nginx config
+      copy:
+        src: /mnt/c/Users/rajam/Documents/GitHub/Ansible/ansible-intro/nginx.conf
+        dest: /etc/nginx/nginx.conf
+
+    - name: Start Nginx
+      systemd:
+        name: nginx
+        state: started
